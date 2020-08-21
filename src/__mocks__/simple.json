@@ -5,13 +5,14 @@
   "required": ["firstName", "lastName"],
   "properties": {
     "firstName": {
-      "type": "string",
+      "type": "boolean",
       "title": "First name",
-      "default": "Chuck"
+      "description": "This is the checkbox-description"
     },
     "lastName": {
       "type": "string",
-      "title": "Last name"
+      "title": "Last name",
+      "enum": ["foo", "bar", "fuzz", "qux"]
     },
     "telephone": {
       "type": "string",

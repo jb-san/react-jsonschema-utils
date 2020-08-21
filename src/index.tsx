@@ -1,7 +1,11 @@
 //@ts-nocheck
-import * as React from 'react';
+
+//https://json-schema.org/draft/2019-09/json-schema-core.html#rfc.section.4.1
+
+import React, { Fragment } from 'react';
+import mock from './__mocks__/simple.json';
 type Props = {
-  schema: any;
+  schema?: any;
   data?: any;
   components?: any;
   context?: any;
@@ -12,13 +16,10 @@ export const JSONSchemaRenderer = ({
   components,
   context,
 }: Props) => {
-  if (!schema) throw 'A Schema needs to be provided';
+  // if (!schema) throw 'A Schema needs to be provided';
 
-  return (
-    <Object parent={schema} current={schema}>
-      the snozzberries taste like snozzberries
-    </Object>
-  );
+  return <Object parent={schema} current={schema} />;
+  // return <div>asdasd</div>;
 };
 
 /**
@@ -32,22 +33,60 @@ export const JSONSchemaRenderer = ({
  * number
  * string
  */
-
-function Null() {
-  return null;
+function TypeSwitch({ type, value }) {
+  switch (type) {
+    case 'null':
+      return <Null {...value} />;
+    case 'boolean':
+      return <Boolean {...value} />;
+    case 'object':
+      return <Object {...value} />;
+    case 'array':
+      return <Array {...value} />;
+    case 'number':
+      return <Number {...value} />;
+    case 'string':
+      return <String {...value} />;
+    default:
+      //TODO: maybe throw an error ? because its not one of the jsonschema types
+      return null;
+  }
 }
-function Boolean() {
-  return true;
+
+export function Null({ type, description, title }) {
+  return <div>null</div>;
+}
+function Boolean({ type, title, description }) {
+  return <div>Boolean</div>;
 }
 function Object({ parent, current }) {
-  return true;
+  const { properties } = current;
+  return <div>object</div>;
+  // return Object.keys(properties).map((key, index) => {
+  //   const value = properties[key];
+  //   const { type } = value;
+  //   return (
+  //     <Fragment>
+  //       <div>object</div>
+  //       <TypeSwitch type={type} value={value} />;
+  //     </Fragment>
+  //   );
+  // });
 }
-function Array() {
-  return true;
+function Array({ type, title, items }) {
+  const { type: itemType } = items;
+  return (
+    <Fragment>
+      <div>Array</div>
+      <TypeSwitch type={itemType} value={items}></TypeSwitch>;
+    </Fragment>
+  );
 }
-function Number() {
-  return true;
+
+// enum is a keyword so renamed to xnum, cuz... cool
+function Number({ title, type, enum: xnum }) {
+  return <div>Number</div>;
 }
-function String() {
-  return true;
+function String({ type, title, enum: xnum }) {
+  return <div>String</div>;
 }
